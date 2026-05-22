@@ -1,0 +1,629 @@
+<?xml version="1.0" ?>
+<robot name="four_wheel_independent_drive_and_steering_vehicle">
+  <material name="black">
+    <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+  <material name="red">
+    <color rgba="1.0 0.0 0.0 1.0"/>
+  </material>
+  <material name="blue">
+    <color rgba="0.0 0.0 1.0 1.0"/>
+  </material>
+  <material name="gray_a">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+
+  <link name="base_footprint"/>
+  
+  <link name="base_link"/>
+  
+  <joint name="footprint_to_base" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+  </joint>
+
+  <link name="body">
+    <visual>
+      <geometry>
+        <cylinder length="0.05" radius="0.5"/>
+      </geometry>
+      <material name="gray_a"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.05" radius="0.5"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="100.0"/>
+      <inertia ixx="6.2708" ixy="0" ixz="0" iyy="6.2708" iyz="0" izz="12.5"/>
+    </inertial>
+  </link>
+  <joint name="base_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.625"/>
+    <parent link="base_link"/>
+    <child link="body"/>
+  </joint>
+  <gazebo reference="body">
+    <material>Gazebo/GreyTransparent</material>
+  </gazebo>
+
+  <link name="laser_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.025" radius="0.025"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.025" radius="0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="laser_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.4 0 0.05"/>
+    <parent link="body"/>
+    <child link="laser_link"/>
+  </joint>
+
+  <link name="imu_link">
+    <visual>
+      <geometry>
+        <box size="0.02 0.02 0.01"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.02 0.02 0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.035"/>
+    <parent link="body"/>
+    <child link="imu_link"/>
+  </joint>
+
+  <link name="front_left_wheel_base_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.025" radius="0.025"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.025" radius="0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+  <joint name="front_left_wheel_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.5 0.5 0.0"/>
+    <parent link="body"/>
+    <child link="front_left_wheel_base_link"/>
+  </joint>
+  <link name="front_left_wheel_suspension">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.01"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.1" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+  <joint name="front_left_wheel_suspension_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0.0 -0.1"/>
+    <parent link="front_left_wheel_base_link"/>
+    <child link="front_left_wheel_suspension"/>
+  </joint>
+  <link name="front_left_wheel_steer">
+    <visual>
+      <geometry>
+        <cylinder length="0.025" radius="0.1"/>
+      </geometry>
+      <material name="gray_a"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.025" radius="0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="front_left_wheel_steer_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0 0.0 -0.1"/>
+    <parent link="front_left_wheel_suspension"/>
+    <child link="front_left_wheel_steer"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="1000" lower="-3.1416" upper="3.1416" velocity="50"/>
+    <dynamics damping="10.0" friction="50.0"/>
+  </joint>
+  <link name="front_left_wheel_rotor">
+    <visual>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5.0"/>
+      <inertia ixx="0.051" ixy="0" ixz="0" iyy="0.051" iyz="0" izz="0.1"/>
+    </inertial>
+  </link>
+  <joint name="front_left_wheel_rotor_joint" type="revolute">
+    <origin rpy="-1.57 0 0" xyz="0 0 -0.225"/>
+    <parent link="front_left_wheel_steer"/>
+    <child link="front_left_wheel_rotor"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10000" lower="-1e9" upper="1e9" velocity="200"/>
+    <dynamics damping="50.0" friction="100.0"/>
+  </joint>
+  <gazebo reference="front_left_wheel_rotor">
+    <mu1>5.0</mu1>
+    <mu2>5.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.0001</minDepth>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <link name="front_right_wheel_base_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.025" radius="0.025"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.025" radius="0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+  <joint name="front_right_wheel_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.5 -0.5 0.0"/>
+    <parent link="body"/>
+    <child link="front_right_wheel_base_link"/>
+  </joint>
+  <link name="front_right_wheel_suspension">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.01"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.1" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+  <joint name="front_right_wheel_suspension_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0.0 -0.1"/>
+    <parent link="front_right_wheel_base_link"/>
+    <child link="front_right_wheel_suspension"/>
+  </joint>
+  <link name="front_right_wheel_steer">
+    <visual>
+      <geometry>
+        <cylinder length="0.025" radius="0.1"/>
+      </geometry>
+      <material name="gray_a"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.025" radius="0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="front_right_wheel_steer_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0 0.0 -0.1"/>
+    <parent link="front_right_wheel_suspension"/>
+    <child link="front_right_wheel_steer"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="1000" lower="-3.1416" upper="3.1416" velocity="50"/>
+    <dynamics damping="10.0" friction="50.0"/>
+  </joint>
+  <link name="front_right_wheel_rotor">
+    <visual>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5.0"/>
+      <inertia ixx="0.051" ixy="0" ixz="0" iyy="0.051" iyz="0" izz="0.1"/>
+    </inertial>
+  </link>
+  <joint name="front_right_wheel_rotor_joint" type="revolute">
+    <origin rpy="-1.57 0 0" xyz="0 0 -0.225"/>
+    <parent link="front_right_wheel_steer"/>
+    <child link="front_right_wheel_rotor"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10000" lower="-1e9" upper="1e9" velocity="200"/>
+    <dynamics damping="50.0" friction="100.0"/>
+  </joint>
+  <gazebo reference="front_right_wheel_rotor">
+    <mu1>5.0</mu1>
+    <mu2>5.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.0001</minDepth>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <link name="rear_left_wheel_base_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.025" radius="0.025"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.025" radius="0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+  <joint name="rear_left_wheel_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="-0.5 0.5 0.0"/>
+    <parent link="body"/>
+    <child link="rear_left_wheel_base_link"/>
+  </joint>
+  <link name="rear_left_wheel_suspension">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.01"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.1" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+  <joint name="rear_left_wheel_suspension_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0.0 -0.1"/>
+    <parent link="rear_left_wheel_base_link"/>
+    <child link="rear_left_wheel_suspension"/>
+  </joint>
+  <link name="rear_left_wheel_steer">
+    <visual>
+      <geometry>
+        <cylinder length="0.025" radius="0.1"/>
+      </geometry>
+      <material name="gray_a"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.025" radius="0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="rear_left_wheel_steer_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0 0.0 -0.1"/>
+    <parent link="rear_left_wheel_suspension"/>
+    <child link="rear_left_wheel_steer"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="1000" lower="-3.1416" upper="3.1416" velocity="50"/>
+    <dynamics damping="10.0" friction="50.0"/>
+  </joint>
+  <link name="rear_left_wheel_rotor">
+    <visual>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5.0"/>
+      <inertia ixx="0.051" ixy="0" ixz="0" iyy="0.051" iyz="0" izz="0.1"/>
+    </inertial>
+  </link>
+  <joint name="rear_left_wheel_rotor_joint" type="revolute">
+    <origin rpy="-1.57 0 0" xyz="0 0 -0.225"/>
+    <parent link="rear_left_wheel_steer"/>
+    <child link="rear_left_wheel_rotor"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10000" lower="-1e9" upper="1e9" velocity="200"/>
+    <dynamics damping="50.0" friction="100.0"/>
+  </joint>
+  <gazebo reference="rear_left_wheel_rotor">
+    <mu1>5.0</mu1>
+    <mu2>5.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.0001</minDepth>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <link name="rear_right_wheel_base_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.025" radius="0.025"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.025" radius="0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+  <joint name="rear_right_wheel_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="-0.5 -0.5 0.0"/>
+    <parent link="body"/>
+    <child link="rear_right_wheel_base_link"/>
+  </joint>
+  <link name="rear_right_wheel_suspension">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.01"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.1" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+  <joint name="rear_right_wheel_suspension_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0.0 -0.1"/>
+    <parent link="rear_right_wheel_base_link"/>
+    <child link="rear_right_wheel_suspension"/>
+  </joint>
+  <link name="rear_right_wheel_steer">
+    <visual>
+      <geometry>
+        <cylinder length="0.025" radius="0.1"/>
+      </geometry>
+      <material name="gray_a"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.025" radius="0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="rear_right_wheel_steer_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0 0.0 -0.1"/>
+    <parent link="rear_right_wheel_suspension"/>
+    <child link="rear_right_wheel_steer"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="1000" lower="-3.1416" upper="3.1416" velocity="50"/>
+    <dynamics damping="10.0" friction="50.0"/>
+  </joint>
+  <link name="rear_right_wheel_rotor">
+    <visual>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5.0"/>
+      <inertia ixx="0.051" ixy="0" ixz="0" iyy="0.051" iyz="0" izz="0.1"/>
+    </inertial>
+  </link>
+  <joint name="rear_right_wheel_rotor_joint" type="revolute">
+    <origin rpy="-1.57 0 0" xyz="0 0 -0.225"/>
+    <parent link="rear_right_wheel_steer"/>
+    <child link="rear_right_wheel_rotor"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10000" lower="-1e9" upper="1e9" velocity="200"/>
+    <dynamics damping="50.0" friction="100.0"/>
+  </joint>
+  <gazebo reference="rear_right_wheel_rotor">
+    <mu1>5.0</mu1>
+    <mu2>5.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.0001</minDepth>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <gazebo reference="laser_link">
+    <material>Gazebo/Blue</material>
+    <sensor name="laser" type="ray">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>800</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.05</min>
+          <max>30.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin filename="libgazebo_ros_ray_sensor.so" name="gazebo_ros_lidar_controller">
+        <ros>
+          <remapping>~/out:=scan</remapping>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>laser_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="imu_link">
+    <material>Gazebo/Red</material>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="gazebo_ros_imu_controller">
+        <ros>
+          <remapping>~/out:=imu</remapping>
+        </ros>
+        <frame_name>imu_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin filename="libgazebo_ros_p3d.so" name="ground_truth_odometry">
+      <always_on>true</always_on>
+      <update_rate>30.0</update_rate>
+      <ros>
+        <remapping>odom:=/groundtruth_odom</remapping>
+      </ros>
+      <body_name>base_footprint</body_name>
+      <frame_name>odom</frame_name>
+      <xyz_offset>0 0 0</xyz_offset>
+      <rpy_offset>0 0 0</rpy_offset>
+      <gaussian_noise>0.0</gaussian_noise>
+    </plugin>
+  </gazebo>
+
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>
+    <joint name="front_left_wheel_steer_joint">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="front_right_wheel_steer_joint">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="rear_left_wheel_steer_joint">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="rear_right_wheel_steer_joint">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="front_left_wheel_rotor_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="front_right_wheel_rotor_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="rear_left_wheel_rotor_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="rear_right_wheel_rotor_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <gazebo>
+    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+      <robot_param>robot_description</robot_param>
+      <robot_param_node>/robot_state_publisher</robot_param_node>
+      <parameters>config/fwids_controllers_ros2.yaml</parameters>
+    </plugin>
+  </gazebo>
+</robot>
