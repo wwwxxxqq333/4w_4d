@@ -7,6 +7,7 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(xacro REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -22,6 +23,27 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+# ---- Generate URDF from xacro at build time --------------------------------
+find_program(XACRO_CMD xacro REQUIRED)
+set(XACRO_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/urdf/fwids_vehicle.xacro")
+set(URDF_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/urdf/fwids_vehicle.urdf")
+
+add_custom_command(
+  OUTPUT ${URDF_OUTPUT}
+  COMMAND ${XACRO_CMD} ${XACRO_INPUT} -o ${URDF_OUTPUT}
+  DEPENDS ${XACRO_INPUT}
+  COMMENT "Generating fwids_vehicle.urdf from xacro"
+)
+
+add_custom_target(generate_urdf ALL DEPENDS ${URDF_OUTPUT})
+
+# install Python scripts
+install(PROGRAMS
+  scripts/fwids_kinematic_controller.py
+  scripts/test_all_wheels.py
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 # install directories
 install(

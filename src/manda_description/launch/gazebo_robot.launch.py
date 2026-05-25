@@ -59,7 +59,7 @@ def generate_launch_description():
         output="screen",
         arguments=["-topic", "robot_description",
                    "-entity", "fwids_vehicle",
-                   "-x", "0.0", "-y", "0.0", "-z", "0.05"],
+                   "-x", "0.0", "-y", "0.0", "-z", "0.15"],
     )
 
     # ---- joint_state_broadcaster spawner ------------------------------------
@@ -72,23 +72,71 @@ def generate_launch_description():
                    "--controller-manager", "/controller_manager"],
     )
 
-    # ---- steering controller spawner ----------------------------------------
-    steering_controller_spawner = Node(
+    # ---- individual steer controller spawners --------------------------------
+    front_left_steer_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        name="steering_controller_spawner",
+        name="front_left_steer_spawner",
         output="screen",
-        arguments=["steering_controller",
+        arguments=["front_left_steer_controller",
+                   "--controller-manager", "/controller_manager"],
+    )
+    front_right_steer_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        name="front_right_steer_spawner",
+        output="screen",
+        arguments=["front_right_steer_controller",
+                   "--controller-manager", "/controller_manager"],
+    )
+    rear_left_steer_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        name="rear_left_steer_spawner",
+        output="screen",
+        arguments=["rear_left_steer_controller",
+                   "--controller-manager", "/controller_manager"],
+    )
+    rear_right_steer_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        name="rear_right_steer_spawner",
+        output="screen",
+        arguments=["rear_right_steer_controller",
                    "--controller-manager", "/controller_manager"],
     )
 
-    # ---- wheel velocity controller spawner ----------------------------------
-    wheel_velocity_controller_spawner = Node(
+    # ---- individual rotor controller spawners --------------------------------
+    front_left_rotor_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        name="wheel_velocity_controller_spawner",
+        name="front_left_rotor_spawner",
         output="screen",
-        arguments=["wheel_velocity_controller",
+        arguments=["front_left_rotor_controller",
+                   "--controller-manager", "/controller_manager"],
+    )
+    front_right_rotor_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        name="front_right_rotor_spawner",
+        output="screen",
+        arguments=["front_right_rotor_controller",
+                   "--controller-manager", "/controller_manager"],
+    )
+    rear_left_rotor_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        name="rear_left_rotor_spawner",
+        output="screen",
+        arguments=["rear_left_rotor_controller",
+                   "--controller-manager", "/controller_manager"],
+    )
+    rear_right_rotor_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        name="rear_right_rotor_spawner",
+        output="screen",
+        arguments=["rear_right_rotor_controller",
                    "--controller-manager", "/controller_manager"],
     )
 
@@ -124,8 +172,14 @@ def generate_launch_description():
             robot_state_publisher,
             spawn_entity,
             joint_state_broadcaster_spawner,
-            steering_controller_spawner,
-            wheel_velocity_controller_spawner,
+            front_left_steer_spawner,
+            front_right_steer_spawner,
+            rear_left_steer_spawner,
+            rear_right_steer_spawner,
+            front_left_rotor_spawner,
+            front_right_rotor_spawner,
+            rear_left_rotor_spawner,
+            rear_right_rotor_spawner,
             rviz,
         ]
     )
