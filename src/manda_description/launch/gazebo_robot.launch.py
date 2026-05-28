@@ -51,6 +51,22 @@ def generate_launch_description():
                      "use_sim_time": True}],
     )
 
+    # ---- FWIDS kinematic controller (cmd_vel → 8 actuators) -----------------
+    kinematic_controller = Node(
+        package="manda_description",
+        executable="fwids_kinematic_controller.py",
+        name="fwids_kinematic_controller",
+        output="screen",
+    )
+
+    # ---- odom → base_footprint TF bridge --------------------------------------
+    odom_tf_publisher = Node(
+        package="manda_description",
+        executable="odom_tf_publisher.py",
+        name="odom_tf_publisher",
+        output="screen",
+    )
+
     # ---- spawn robot in Gazebo ----------------------------------------------
     spawn_entity = Node(
         package="gazebo_ros",
@@ -141,11 +157,13 @@ def generate_launch_description():
     )
 
     # ---- rviz2 --------------------------------------------------------------
+    rviz_config = os.path.join(pkg_share, "config", "display.rviz")
     rviz = Node(
         package="rviz2",
         executable="rviz2",
         name="rviz2",
         output="screen",
+        arguments=["-d", rviz_config],
         parameters=[{"use_sim_time": True}],
         condition=IfCondition(use_rviz),
     )
@@ -170,6 +188,8 @@ def generate_launch_description():
             gzserver,
             gzclient,
             robot_state_publisher,
+            kinematic_controller,
+            odom_tf_publisher,
             spawn_entity,
             joint_state_broadcaster_spawner,
             front_left_steer_spawner,

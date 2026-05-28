@@ -1,0 +1,113 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="default">
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+
+    <!-- Wall 1: North -->
+    <model name="wall_north">
+      <static>true</static>
+      <pose>0 3 1.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>8 0.25 2.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>8 0.25 2.5</size></box></geometry>
+          <material><script>Gazebo/Grey</script></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Wall 2: South -->
+    <model name="wall_south">
+      <static>true</static>
+      <pose>0 -3 1.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>8 0.25 2.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>8 0.25 2.5</size></box></geometry>
+          <material><script>Gazebo/Grey</script></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Wall 3: West -->
+    <model name="wall_west">
+      <static>true</static>
+      <pose>-4 0 1.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.25 8 2.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.25 8 2.5</size></box></geometry>
+          <material><script>Gazebo/Grey</script></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Wall 4: East -->
+    <model name="wall_east">
+      <static>true</static>
+      <pose>4 0 1.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.25 8 2.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.25 8 2.5</size></box></geometry>
+          <material><script>Gazebo/Grey</script></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Pillar 1 -->
+    <model name="pillar_1">
+      <static>true</static>
+      <pose>1.5 1.5 1.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><cylinder><radius>0.2</radius><length>2.5</length></cylinder></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.2</radius><length>2.5</length></cylinder></geometry>
+          <material><script>Gazebo/Red</script></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Pillar 2 -->
+    <model name="pillar_2">
+      <static>true</static>
+      <pose>-1.5 1.5 1.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><cylinder><radius>0.2</radius><length>2.5</length></cylinder></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.2</radius><length>2.5</length></cylinder></geometry>
+          <material><script>Gazebo/Red</script></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Pillar 3 -->
+    <model name="pillar_3">
+      <static>true</static>
+      <pose>0 -1.5 1.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><cylinder><radius>0.2</radius><length>2.5</length></cylinder></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.2</radius><length>2.5</length></cylinder></geometry>
+          <material><script>Gazebo/Red</script></material>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>

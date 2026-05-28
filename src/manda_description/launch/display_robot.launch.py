@@ -40,10 +40,16 @@ def generate_launch_description():
     )
 
     # ---- rviz2 -------------------------------------------------------------
+    rviz_config = os.path.join(
+        get_package_share_directory("manda_description"),
+        "config",
+        "display.rviz",
+    )
     rviz = Node(
         package="rviz2",
         executable="rviz2",
         name="rviz2",
+        arguments=["-d", rviz_config],
         condition=IfCondition(use_rviz),
     )
 

@@ -210,6 +210,7 @@
       </ros>
       <body_name>base_footprint</body_name>
       <frame_name>odom</frame_name>
+      <publish_tf>0</publish_tf>
     </plugin>
   </gazebo>
 

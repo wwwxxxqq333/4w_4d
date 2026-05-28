@@ -17,18 +17,19 @@ from geometry_msgs.msg import Twist
 from std_msgs.msg import Float64MultiArray
 
 
+
 class FWIDSKinematicController(Node):
     def __init__(self):
         super().__init__("fwids_kinematic_controller")
 
-        self.tire_radius = 0.2
+        self.tire_radius = 0.1015
 
         # Wheel positions (xi, yi) from vehicle center
         self.wheels = {
-            "front_left":  ( 0.5,  0.5),
-            "front_right": ( 0.5, -0.5),
-            "rear_left":   (-0.5,  0.5),
-            "rear_right":  (-0.5, -0.5),
+            "front_left":  ( 0.24,  0.19),
+            "front_right": ( 0.24, -0.19),
+            "rear_left":   (-0.24,  0.19),
+            "rear_right":  (-0.24, -0.19),
         }
 
         self.steer_pubs = {}
@@ -39,9 +40,10 @@ class FWIDSKinematicController(Node):
             self.rotor_pubs[name] = self.create_publisher(
                 Float64MultiArray, f"/{name}_rotor_controller/commands", 10)
 
-        # Low-pass filtered rotor velocity (per wheel) to prevent instant jumps
+        # Rate-limit state
         self._rotor_vel = {name: 0.0 for name in self.wheels}
-        self._max_accel = 2.0  # max rotor accel (rad/s²), i.e. 0.4 m/s² linear
+        self._max_accel = 50.0  # max rotor accel (rad/s²)
+        self._last_time = None
 
         self.sub = self.create_subscription(
             Twist, "/cmd_vel", self.cmd_vel_callback, 10)
@@ -54,7 +56,10 @@ class FWIDSKinematicController(Node):
         vy = msg.linear.y
         omega = msg.angular.z
 
-        dt = 0.02  # ~50 Hz callback rate
+        now = self.get_clock().now()
+        dt = (now - self._last_time).nanoseconds * 1e-9 if self._last_time else 0.05
+        self._last_time = now
+        dt = max(dt, 0.001)  # clamp to avoid zero-division
 
         for name, (xi, yi) in self.wheels.items():
             # Steering angle
@@ -64,8 +69,8 @@ class FWIDSKinematicController(Node):
             v_wheel = math.sqrt(
                 (vx - omega * yi) ** 2 + (vy + omega * xi) ** 2)
 
-            # Target rotor angular velocity (rad/s), sign-flipped for forward
-            target = -v_wheel / self.tire_radius
+            # Target rotor angular velocity (rad/s)
+            target = v_wheel / self.tire_radius
 
             # Rate-limit: clamp acceleration
             prev = self._rotor_vel[name]

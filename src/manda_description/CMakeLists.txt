@@ -42,6 +42,7 @@ add_custom_target(generate_urdf ALL DEPENDS ${URDF_OUTPUT})
 install(PROGRAMS
   scripts/fwids_kinematic_controller.py
   scripts/test_all_wheels.py
+  scripts/odom_tf_publisher.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -49,6 +50,7 @@ install(PROGRAMS
 install(
   DIRECTORY launch urdf config worlds
   DESTINATION share/${PROJECT_NAME}
+  PATTERN "*.pyc" EXCLUDE
 )
 
 ament_package()
